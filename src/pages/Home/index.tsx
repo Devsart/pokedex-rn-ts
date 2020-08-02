@@ -15,7 +15,8 @@ import { useNavigation } from '@react-navigation/native'
 
 const Home = () => {
 
-  const [name, setName] = useState('');
+const [name, setName] = useState('');
+const [password, setPassword] = useState('');
 const navigation = useNavigation();
 function handleNatigateToPokedex(){
   navigation.navigate('Pokedex',{
@@ -34,16 +35,33 @@ function handleNatigateToPokedex(){
               <Text style={styles.title}>{`Bem-vindo,\nMestre Pokémon!`}</Text>
             </View>
             <View style={styles.container}>
-              <TextInput style={styles.input} placeholder="Insira seu nome" value={name} autoCorrect={false} onChangeText={setName} />
+              <TextInput 
+              style={styles.input} 
+              returnKeyType='next' 
+              placeholder="Insira seu nome" 
+              value={name} 
+              autoCorrect={false} 
+              onChangeText={setName} 
+              
+              />
+              <TextInput 
+              style={styles.input}
+              textContentType="password" 
+              placeholder="Insira sua senha" 
+              value={password} 
+              autoCorrect={false}
+              keyboardType='numeric' 
+              secureTextEntry 
+              onChangeText={setPassword}  />
             </View>
-            <View style={styles.container}>
-            <BaseButton style={styles.button} onPress={handleNatigateToPokedex}>
+            <View style={{flex:1, justifyContent:'center', paddingLeft:64, flexDirection:'column'}}>
+            <RectButton style={styles.button} onPress={handleNatigateToPokedex}>
               <View style={styles.buttonIcon}>
                 <Image source={require('../../assets/pokego.png')} 
                 />
               </View>
-              <Text style={styles.buttonText}>Temos que pegar!</Text>
-            </BaseButton>
+              <Text style={styles.buttonText}>{`Acesse sua\n  Pokedéx`}</Text>
+            </RectButton>
             </View>
           </ImageBackground>
       </KeyboardAvoidingView>
@@ -63,7 +81,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    paddingTop: 50,
+    paddingTop: 90,
     color: '#322153',
     fontSize: 24,
     fontFamily: 'Ubuntu Bold',
@@ -92,13 +110,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingHorizontal: 24,
     fontSize: 16,
-    marginTop:60,
   },
 
   button: {
     backgroundColor: '#FB4E4E',
     height: 60,
-    width: 230,
+    width: 160,
     flexDirection: 'row',
     borderRadius: 30,
     overflow: 'hidden',
@@ -117,7 +134,6 @@ const styles = StyleSheet.create({
   buttonText: {
     flex: 1,
     justifyContent: 'center',
-    textAlign: 'center',
     color: '#FFF',
     fontFamily: 'Roboto',
     fontSize: 16,
