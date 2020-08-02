@@ -1,107 +1,106 @@
 import React from 'react';
 import {
   StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-declare const global: {HermesInternal: null | {}};
+interface Params {
+  name: string,
+}
 
 const Pokedex = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const routeParams = route.params as Params;
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <View>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Sartinho é o cara</Text>
-              <Text style={styles.sectionDescription}>
-                Vai fazer pokedex <Text style={styles.highlight}>App.tsx</Text> to change
-                this screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.title}>{`Olá, ${routeParams.name}! Essa é a sua Pokedex`}</Text>
       </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    padding: 32,
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+
+  main: {
+    flex: 1,
+    justifyContent: 'center',
   },
-  body: {
-    backgroundColor: "red",
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
+
+  title: {
+    paddingTop: 50,
+    color: '#322153',
     fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
+    fontFamily: 'Ubuntu Bold',
+    maxWidth: 260,
+    marginTop: 64,
+    textAlign: "center",
   },
-  sectionDescription: {
+
+  description: {
+    color: '#6C6C80',
+    fontSize: 16,
+    marginTop: 16,
+    fontFamily: 'Roboto',
+    maxWidth: 260,
+    lineHeight: 24,
+  },
+
+  footer: {},
+
+  select: {},
+
+  input: {
+    height: 60,
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    marginBottom: 8,
+    paddingHorizontal: 24,
+    fontSize: 16,
+    marginTop:60,
+  },
+
+  button: {
+    backgroundColor: '#FB4E4E',
+    height: 60,
+    width: 230,
+    flexDirection: 'row',
+    borderRadius: 30,
+    overflow: 'hidden',
+    alignItems: 'center',
     marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
+    justifyContent: 'center',
   },
-  highlight: {
-    fontWeight: '700',
+
+  buttonIcon: {
+    height: 60,
+    width: 60,
+    borderRadius:30,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
+
+  buttonText: {
+    flex: 1,
+    justifyContent: 'center',
+    textAlign: 'center',
+    color: '#FFF',
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    fontWeight: "bold",
+  }
 });
 
 export default Pokedex;

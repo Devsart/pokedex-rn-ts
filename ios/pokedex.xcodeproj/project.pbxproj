@@ -20,6 +20,8 @@
 		C5A2E9E15985BB9A5A338FCD /* libPods-pokedex-pokedexTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F36FD6641BD6D81442298FE /* libPods-pokedex-pokedexTests.a */; };
 		D661D060C3F808F4D682CEBA /* libPods-pokedex-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8010B05BCFEEF7B2DE0098FC /* libPods-pokedex-tvOSTests.a */; };
 		D9D043758AFC733BDBB3991E /* libPods-pokedex-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DC3286782267089D12A053B /* libPods-pokedex-tvOS.a */; };
+		858BA6B868004BDEB7275265 /* Roboto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 927A77E7E297449B9D8CB693 /* Roboto.ttf */; };
+		10C264EF42984151A477BD9B /* Ubuntu Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2CB8B3173DC648E3893ED099 /* Ubuntu Bold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +69,8 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F3E913972B31574447799D3B /* Pods-pokedex.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pokedex.debug.xcconfig"; path = "Target Support Files/Pods-pokedex/Pods-pokedex.debug.xcconfig"; sourceTree = "<group>"; };
+		927A77E7E297449B9D8CB693 /* Roboto.ttf */ = {isa = PBXFileReference; name = "Roboto.ttf"; path = "../src/assets/fonts/Roboto.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2CB8B3173DC648E3893ED099 /* Ubuntu Bold.ttf */ = {isa = PBXFileReference; name = "Ubuntu Bold.ttf"; path = "../src/assets/fonts/Ubuntu Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +169,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				896751923113820FB4EA36BE /* Pods */,
+				8266F379986943419071C9F8 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -197,6 +202,16 @@
 			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		8266F379986943419071C9F8 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				927A77E7E297449B9D8CB693 /* Roboto.ttf */,
+				2CB8B3173DC648E3893ED099 /* Ubuntu Bold.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -342,6 +357,8 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				858BA6B868004BDEB7275265 /* Roboto.ttf in Resources */,
+				10C264EF42984151A477BD9B /* Ubuntu Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

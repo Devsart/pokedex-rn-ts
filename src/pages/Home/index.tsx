@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import {
-  SafeAreaView,
+  Platform,
+  KeyboardAvoidingView,
   StyleSheet,
   ImageBackground,
   View,
   Text,
   StatusBar,
-  Button,
+  Image,
 } from 'react-native';
-import { TextInput, TouchableOpacity, RectButton } from 'react-native-gesture-handler';
+import { TextInput, RectButton, BaseButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
 
 
@@ -25,25 +26,27 @@ function handleNatigateToPokedex(){
   return (
     <>
       <StatusBar barStyle="dark-content" />
-        
+      <KeyboardAvoidingView style={{flex:1}} behavior ={Platform.OS=== 'ios' ? "padding" : undefined}>
             <ImageBackground source={require('../../assets/pokebackground.png')} 
             style={styles.container}
-            imageStyle={{height:368,width:274}}>
+            imageStyle={{height:700,width:375}}>
             <View style={styles.container}>
               <Text style={styles.title}>{`Bem-vindo,\nMestre Pokémon!`}</Text>
             </View>
             <View style={styles.container}>
-              <Text style={styles.description}>Name:</Text>
               <TextInput style={styles.input} placeholder="Insira seu nome" value={name} autoCorrect={false} onChangeText={setName} />
             </View>
             <View style={styles.container}>
-            <RectButton style={styles.button} onPress={handleNatigateToPokedex}>
+            <BaseButton style={styles.button} onPress={handleNatigateToPokedex}>
               <View style={styles.buttonIcon}>
+                <Image source={require('../../assets/pokego.png')} 
+                />
               </View>
               <Text style={styles.buttonText}>Temos que pegar!</Text>
-            </RectButton>
+            </BaseButton>
             </View>
           </ImageBackground>
+      </KeyboardAvoidingView>
     </>
   );
 };
@@ -63,16 +66,17 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     color: '#322153',
     fontSize: 24,
-    fontFamily: 'Ubuntu_700Bold',
+    fontFamily: 'Ubuntu Bold',
     maxWidth: 260,
     marginTop: 64,
+    textAlign: "center",
   },
 
   description: {
     color: '#6C6C80',
     fontSize: 16,
     marginTop: 16,
-    fontFamily: 'Roboto_400Regular',
+    fontFamily: 'Roboto',
     maxWidth: 260,
     lineHeight: 24,
   },
@@ -88,6 +92,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingHorizontal: 24,
     fontSize: 16,
+    marginTop:60,
   },
 
   button: {
@@ -98,8 +103,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     overflow: 'hidden',
     alignItems: 'center',
-    marginTop: 8,
-    justifyContent: 'center',
   },
 
   buttonIcon: {
@@ -116,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
     color: '#FFF',
-    fontFamily: 'Roboto_500Medium',
+    fontFamily: 'Roboto',
     fontSize: 16,
     fontWeight: "bold",
   }
