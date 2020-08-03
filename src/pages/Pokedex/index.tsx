@@ -1,8 +1,10 @@
+/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import { SafeAreaView, ActivityIndicator ,View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import { ImageBackground ,StatusBar ,SafeAreaView, ActivityIndicator ,View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Details from '../Details';
 import api from '../../services/api';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface Params {
   name: string;
@@ -33,21 +35,28 @@ fetch(url)
 function handleselectedPokemon(name:string){
   navigation.navigate('Details',{
     name
-  })  
-  //, {pokemon:,}
-  
+  })
 }
-  
+function handleNavigateBack() {
+  navigation.goBack();
+}
 
 return (
+  <>
+  <StatusBar barStyle="dark-content" />
+  <ImageBackground source={require('../../assets/pokefundo.png')} 
+            style={styles.container}
+            imageStyle={{height:600,width:350}}>
   <SafeAreaView>
-    <View>
+      <TouchableOpacity style={styles.backButton} onPress={handleNavigateBack}>
+        <Icon name="chevron-left" size={20} color="#6C6C80" />
+      </TouchableOpacity>
       <Text style={styles.title}>Olá, {routeParams.name}</Text>
-    </View>
     <View style={styles.searchCont}>
+      <Icon name="search" size={20} style={{position:'absolute', marginTop:15, marginLeft:10, color:'#6C6C80'}} />
       <TextInput
         style={styles.searchfeild}
-        placeholder="Search Pokemons"
+        placeholder="Procurar Pokemons"
         onChangeText={value => setSearchfeild(value)}
         value={searchfeild}
       />
@@ -84,6 +93,8 @@ return (
         <ActivityIndicator size="large" color="#E63F34" />
     </View>
   </SafeAreaView>
+  </ImageBackground>
+  </>
   //:
   //(
   //  <View style={styles.indicator}>
@@ -147,7 +158,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: 'Ubuntu Bold',
     marginTop: 40,
-    textAlign: "center",
+    textAlign: 'center',
+  },
+  backButton: {
+    flex: 1,
+    marginTop: 32,
+    marginLeft:24,
+    position: 'absolute',
   },
   });
 
