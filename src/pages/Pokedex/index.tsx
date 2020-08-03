@@ -1,18 +1,28 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView, ActivityIndicator ,View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import Details from '../Details';
+import api from '../../services/api';
 
+interface Params {
+  name: string;
+}
 interface Pokemon {
   name: string;
+  id: number;
 }
 
 const Pokedex = (props: Pokemon) => {
-const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-const [searchfeild, setSearchfeild] = useState('');
-const navigation = useNavigation();
+  const route = useRoute();
+  const routeParams = route.params as Params;
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [searchfeild, setSearchfeild] = useState('');
+  const navigation = useNavigation();
+  const [pokeid,setPokeid] = useState('0');
+  const [details, setDetails] = useState([]); 
 
 useEffect(() => {
- fetchPokemons('https://pokeapi.co/api/v2/pokemon?limit=150');
+ fetchPokemons('https://pokeapi.co/api/v2/pokemon?limit=500');
 },[]);
 const fetchPokemons = (url:string) => {
 fetch(url)
@@ -20,15 +30,20 @@ fetch(url)
 .then(pokemons => setPokemons(pokemons.results));
 };
 
-function handleNavigateToDetails(){
-  navigation.navigate('Details', {
-    pokemon:,
-  })
+function handleselectedPokemon(name:string){
+  navigation.navigate('Details',{
+    name
+  })  
+  //, {pokemon:,}
+  
 }
   
 
 return (
-  <View>
+  <SafeAreaView>
+    <View>
+      <Text style={styles.title}>Olá, {routeParams.name}</Text>
+    </View>
     <View style={styles.searchCont}>
       <TextInput
         style={styles.searchfeild}
@@ -50,7 +65,7 @@ return (
                 activeOpacity={0.5}
                 key={index}
                 style={styles.card}
-                onPress={handleNavigateToDetails}>
+                onPress={()=> handleselectedPokemon(pokemon.name)}>
                 <Image
                   style={{width: 150, height: 150}}
                   source={{
@@ -65,35 +80,47 @@ return (
           })}
       </View>
     </ScrollView>
-  </View>
-);
+    <View style={styles.indicator}>
+        <ActivityIndicator size="large" color="#E63F34" />
+    </View>
+  </SafeAreaView>
+  //:
+  //(
+  //  <View style={styles.indicator}>
+  //    <ActivityIndicator size="large" color="#E63F34" />
+  //  </View>
+  //)
+)
 };
 const styles = StyleSheet.create({  
-  container: {
-   backgroundColor:'#FB4E4E',    
+  container: {    
    display: 'flex',    
    flexDirection: 'row',    
    flexWrap: 'wrap',    
-   justifyContent: 'center',    
-   marginTop: 30,  
+   justifyContent: 'center',      
   },  
+  indicator: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop:150,
+  },
   card: {
    backgroundColor: '#ededed',    
    display: 'flex',    
    alignItems: 'center',    
    borderWidth: 2,
    borderRadius:10,   
-   borderColor: '#ff6e72',       
+   borderColor: '#322153',       
    marginVertical: 10,
    marginHorizontal: 4,  
   },  
   searchCont: {
-   display: 'flex',    
-   position: 'relative',    
-   marginBottom: 5,    
+   display: 'flex',   
+   marginBottom: 5,
    left: '20%',    
-   zIndex: 1, 
-   marginTop:16,     
+   zIndex: 1,
+   paddingTop:5,
   },  
   searchfeild: {    
   height: 40,    
@@ -101,8 +128,7 @@ const styles = StyleSheet.create({
   borderColor: '#000',    
   textAlign: 'center',    
   width: 250,    
-  borderRadius: 50,
-  marginTop:50,  
+  borderRadius: 50,  
   },
   description: {
     color: '#6C6C80',
@@ -111,6 +137,17 @@ const styles = StyleSheet.create({
     fontFamily: 'Ubuntu Bold',
     maxWidth: 260,
     lineHeight: 16,
+  },
+  selectedPoke: {
+    borderColor: 'red',
+    borderWidth: 2,
+  },
+  title: {
+    color: '#322153',
+    fontSize: 24,
+    fontFamily: 'Ubuntu Bold',
+    marginTop: 40,
+    textAlign: "center",
   },
   });
 

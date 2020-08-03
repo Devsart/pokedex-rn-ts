@@ -1,46 +1,73 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, StyleSheet, ActivityIndicator} from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Details = props => {
-  const [details, setDetails] = useState([]);
+interface Params {
+  name: string;
+}
+interface Details {
+  name: string;
+  height: number;
+  weight: number;
+  types: [
+    {
+      type: {
+        name: string;
+      };
+    },
+  ];
+}
+
+const Details = (props: Details) => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const [details, setDetails] = useState<Details[]>([]);
+  const routeParams = route.params as Params
 
   useEffect(() => {
     fetchPokemonDetails();
   }, []);
 
-  const fetchPokemonDetails = () => {
-    const {state} = props.navigation;
-    fetch(`https://pokeapi.co/api/v2/pokemon/${state.params.pokemon}`)
-      .then(res => res.json())
-      .then(details => setDetails(details));
-  };
+  async function fetchPokemonDetails() {
+    await fetch(`https://pokeapi.co/api/v2/pokemon/${routeParams.name}/`)
+      .then((res) => res.json())
+      .then((details) => setDetails(details));
+  }
 
-  return details.name ? (
+  function handleNavigateBack() {
+    navigation.goBack();
+  }
+  //const nome = details.name;
+  //const altura = details.height;
+  //async function tipo1(){ await(details.types[0].type.name)}
+  //const tipo2 = details.types[1].type.name;
+
+  return (
     <View style={{flex: 1, alignItems: 'center'}}>
+      <TouchableOpacity onPress={handleNavigateBack}>
+        <Icon name="chevron-left" size={20} color="#34cb79" />
+      </TouchableOpacity>
       <Image
         style={styles.image}
         source={{
-          uri: `https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/${
-            details.name
-          }.png`,
+          uri: `https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/${details.name}.png`,
         }}
       />
-      <Text style={styles.text}>Name: {details.name}</Text>
-      <Text style={styles.text}>Height: {details.height}</Text>
-      <Text style={styles.text}>Weight: {details.weight}</Text>
-      <Text style={styles.text}>
-        Ability: {details.abilities[0].ability.name}
-      </Text>
-      <Text style={styles.text}>Type: {details.types[0].type.name}</Text>
+      <Text style={styles.text}>Nome: {details.name}</Text>
+      <Text style={styles.text}>Altura: {details.height}</Text>
+      <Text style={styles.text}>Peso: {details.weight}</Text>
+      <Text style={styles.text}>Moves:</Text>
     </View>
-  ) : (
-    <View style={styles.indicator}>
-      <ActivityIndicator size="large" color="#E63F34" />
-    </View>
-  );
+  )
 };
-
-export default Details;
 
 const styles = StyleSheet.create({
   image: {
@@ -57,3 +84,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default Details;
