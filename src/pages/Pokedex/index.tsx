@@ -5,6 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import Details from '../Details';
 import api from '../../services/api';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { RectButton } from 'react-native-gesture-handler';
 
 interface Params {
   name: string;
@@ -24,7 +25,7 @@ const Pokedex = (props: Pokemon) => {
   const [details, setDetails] = useState([]); 
 
 useEffect(() => {
- fetchPokemons('https://pokeapi.co/api/v2/pokemon?limit=500');
+ fetchPokemons('https://pokeapi.co/api/v2/pokemon?limit=20');
 },[]);
 const fetchPokemons = (url:string) => {
 fetch(url)
@@ -32,10 +33,14 @@ fetch(url)
 .then(pokemons => setPokemons(pokemons.results));
 };
 
-function handleselectedPokemon(name:string){
+function handleselectedPokemon(name:string,id:string){
   navigation.navigate('Details',{
-    name
-  })
+    name,
+    id,
+  });
+}
+function handleRegister(){
+  navigation.navigate('Register');
 }
 function handleNavigateBack() {
   navigation.goBack();
@@ -74,7 +79,7 @@ return (
                 activeOpacity={0.5}
                 key={index}
                 style={styles.card}
-                onPress={()=> handleselectedPokemon(pokemon.name)}>
+                onPress={()=> handleselectedPokemon(pokemon.name,String(index + 1))}>
                 <Image
                   style={{width: 150, height: 150}}
                   source={{
@@ -92,6 +97,9 @@ return (
     <View style={styles.indicator}>
         <ActivityIndicator size="large" color="#E63F34" />
     </View>
+    <RectButton style={styles.button} onPress={handleRegister}>
+      <Icon name="plus" size={40} color="white" />
+    </RectButton>
   </SafeAreaView>
   </ImageBackground>
   </>
@@ -108,8 +116,28 @@ const styles = StyleSheet.create({
    display: 'flex',    
    flexDirection: 'row',    
    flexWrap: 'wrap',    
-   justifyContent: 'center',      
-  },  
+   justifyContent: 'center',  
+  },
+  button: {
+    position:'absolute',
+    backgroundColor: '#FB4E4E',
+    height: 60,
+    width: 60,
+    flexDirection: 'row',
+    borderRadius: 30,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf:'flex-end',
+    top: 600,
+  },
+  containerbg: {    
+    display: 'flex',    
+    flexDirection: 'row',    
+    flexWrap: 'wrap',    
+    justifyContent: 'center',
+    backgroundColor: 'red',  
+   },  
   indicator: {
     flex: 1,
     alignItems: 'center',
@@ -149,6 +177,11 @@ const styles = StyleSheet.create({
     maxWidth: 260,
     lineHeight: 16,
   },
+  buttonText: {
+    color: 'white',
+    fontSize: 14,
+    fontFamily: 'Ubuntu Bold',
+  },
   selectedPoke: {
     borderColor: 'red',
     borderWidth: 2,
@@ -164,6 +197,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 32,
     marginLeft:24,
+    paddingTop:16,
     position: 'absolute',
   },
   });

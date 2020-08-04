@@ -9,7 +9,6 @@ import {
   Text,
   Image,
   StyleSheet,
-  ActivityIndicator,
   ImageBackground,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -17,42 +16,59 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface Params {
   name: string;
+  id:string;
 }
 interface Details {
   name: string;
   height: number;
   weight: number;
-  types: [
-    {
-      type: {
-        name: string;
-      };
-    },
-  ];
+  type1: string
 }
 
 const Details = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const [details, setDetails] = useState<Details[]>([]);
+  const [name,setName] = useState('')
+  const [type1,setType1] = useState('');
+  const [type2,setType2] = useState('');
+  const [height, setHeight] = useState(0);
+  const [weight, setWeight] = useState(0);
+  const [evolution, setEvolution] = useState('');
   const routeParams = route.params as Params;
-
+  console.log(routeParams.id)
   useEffect(() => {
+    fetchPokemonTypes();
     fetchPokemonDetails();
   }, []);
 
   async function fetchPokemonDetails() {
-    await fetch(`https://pokeapi.co/api/v2/pokemon/${routeParams.name}/`)
+    await fetch(`https://pokeapi.co/api/v2/pokemon-species/${routeParams.name}/`)
       .then((res) => res.json())
       // eslint-disable-next-line no-shadow
-      .then((details) => setDetails(details));
-  }
+      .then(function(evolution){
+        setEvolution(
+          evolution.evolves_from_species ? 
+          evolution.evolves_from_species.name.toUpperCase() : 
+          'NENHUM' );
+        
+        });
+ }
+ async function fetchPokemonTypes() {
+  await fetch(`https://pokeapi.co/api/v2/pokemon/${routeParams.name}/`)
+    .then((res) => res.json())
+    // eslint-disable-next-line no-shadow
+    .then(function(details){
+      setName(details.name.toUpperCase());
+      setType1(details.types[0].type.name.toUpperCase());
+      setType2(details.types[1] ? details.types[1].type.name.toUpperCase() : 'NENHUM');
+      setWeight((details.weight) / 10);
+      setHeight((details.height) / 10);
+    });
+};
 
   function handleNavigateBack() {
     navigation.goBack();
   }
-  const nome = details.name;
-  const altura = details.height;
   //async function tipo1(){ await(details.types[0].type.name)}
   //const tipo2 = details.types[1].type.name;
 
@@ -64,19 +80,23 @@ const Details = () => {
             imageStyle={{height:600,width:350}}>
     <View style={{flex: 1}}>
       <TouchableOpacity style={styles.backButton} onPress={handleNavigateBack}>
-        <Icon name="chevron-left" size={20} color="#6C6C80" />
+        <Icon name="chevron-left" size={20} color="white" />
       </TouchableOpacity>
         <Text style={styles.buttontext}>Voltar</Text>
       <Image
-        style={styles.image}
+        style={styles.imagecontainer}
         source={{
-          uri: `https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/${details.name}.png`,
+          uri: `https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/${name.toLowerCase()}.png`,
         }}
       />
-      <Text style={styles.text}>Nome: {nome}</Text>
-      <Text style={styles.text}>Altura: {details.height}</Text>
-      <Text style={styles.text}>Peso: {details.weight}</Text>
-      <Text style={styles.text}>Moves:</Text>
+      <View style={styles.containercard}>
+      <Text style={styles.text}>NOME: {name}</Text>
+      <Text style={styles.text}>ALTURA: {height} M </Text>
+      <Text style={styles.text}>PESO: {weight} KG </Text>
+      <Text style={styles.text}>TIPO 1: {type1} </Text>
+      <Text style={styles.text}>TIPO 2: {type2} </Text>
+      <Text style={styles.text}>EVOLUÇÃO DE: {evolution}</Text>
+      </View>
     </View>
     </ImageBackground>
     </>
@@ -88,6 +108,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 32,
+    backgroundColor:'#C42A2A',
   },
   image: {
     width: 300,
@@ -101,15 +122,43 @@ const styles = StyleSheet.create({
     maxWidth: 260,
     lineHeight: 16,
   },
+  containercard: {
+    backgroundColor: '#ededed',    
+    display: 'flex',    
+    alignItems: 'center',    
+    borderWidth: 2,
+    borderRadius:10,   
+    borderTopColor: 'gray',
+    borderLeftColor: 'gray',
+    borderBottomColor: 'white',
+    borderRightColor: 'white',       
+    marginVertical: 10,
+    marginHorizontal: 4,
+    paddingTop:10,  
+   },
+   imagecontainer: {
+    width: 250,
+    height: 250,
+    backgroundColor: '#C2D9AD',    
+    display: 'flex',    
+    alignItems: 'center',    
+    borderWidth: 2,
+    borderRadius:10,       
+    marginTop: 80,
+    marginHorizontal: 4,
+    marginLeft:24,
+    borderColor: '#b22929',  
+   },  
   buttontext: {
     position: 'absolute',
     marginTop: 4,
     marginLeft:24,
-    color: '#6C6C80',
+    color: 'white',
     fontSize: 16,
     fontFamily: 'Roboto',
     maxWidth: 260,
     lineHeight: 16,
+    paddingTop:10,
   },
   indicator: {
     flex: 1,
@@ -120,6 +169,7 @@ const styles = StyleSheet.create({
   backButton: {
     flex: 1,
     position: 'absolute',
+    paddingTop: 10,
   },
 });
 
