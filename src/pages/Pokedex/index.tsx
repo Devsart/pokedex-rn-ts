@@ -1,11 +1,9 @@
-/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import { ImageBackground ,StatusBar ,SafeAreaView, ActivityIndicator ,View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RectButton } from 'react-native-gesture-handler';
 import localStorage from '../../services/localstorage';
-//import AsyncStorage from '@react-native-community/async-storage'
 
 interface Params {
   name: string;
