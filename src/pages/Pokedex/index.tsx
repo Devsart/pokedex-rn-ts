@@ -6,6 +6,8 @@ import Details from '../Details';
 import api from '../../services/api';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RectButton } from 'react-native-gesture-handler';
+import localStorage from '../../services/localstorage';
+//import AsyncStorage from '@react-native-community/async-storage'
 
 interface Params {
   name: string;
@@ -32,6 +34,11 @@ fetch(url)
 .then(response => response.json())
 .then(pokemons => setPokemons(pokemons.results));
 };
+
+//async function AllPoke(){
+//  await localStorage.getItem("ivysaur");
+//}
+//console.log(AsyncStorage.getItem(`@myPokemons:ivysaur`))
 
 function handleselectedPokemon(name:string,id:string){
   navigation.navigate('Details',{

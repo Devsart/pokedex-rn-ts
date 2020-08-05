@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+/* eslint-disable no-shadow */
+/* eslint-disable prettier/prettier */
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -8,15 +10,68 @@ import {
   Image,
 } from 'react-native';
 import { RectButton, TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 import ImagePicker from 'react-native-image-picker';
+import localStorage from '../../services/localstorage';
 
+interface Pokemon {
+  name: string;
+  uri: string;
+  evolucao: string;
+}
 
 
 
 const Register = () => {
+  
   const [avatar,setAvatar] = useState('');
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [selectedPokemon, setSelectedpokemon] = useState<string[]>(['']);
+  const [selectedEvolution, setSelectedevolution] = useState<string[]>(['']);
+  useEffect(() => {
+    fetchPokemons('https://pokeapi.co/api/v2/pokemon?limit=20');
+  },[]);
+  const fetchPokemons = (url:string) => {
+    fetch(url)
+    .then(response => response.json())
+    .then(pokemons => setPokemons(pokemons.results));
+  };
 
+  function handleselectedPokemon(name: string){
+    const alreadySelected = selectedPokemon.findIndex(item => item === name);
+
+    if(alreadySelected >= 0){
+        const filteredItems = selectedPokemon.filter(item => item !== name);
+        setSelectedpokemon(filteredItems);
+    }
+    else{
+        setSelectedpokemon([name]);
+    }
+  };
+
+  function handleselectedEvolution(name: string){
+    const alreadySelected = selectedEvolution.findIndex(item => item === name);
+
+    if(alreadySelected >= 0){
+      const filteredItems = selectedEvolution.filter(item => item !== name);
+      setSelectedevolution(filteredItems);
+    }
+    else{
+      setSelectedevolution([name]);
+    }
+  };
+  //async function handleSubmit(){
+  //  var pokemao = new Pokemon({
+  //    name : selectedPokemon[0],
+  //    uri : avatar,
+  //    evolucao: selectedEvolution[0],
+  //  })
+  //  await localStorage.setItem(pokemao);
+//
+  //  console.log(localStorage.getAllItems());
+//
+  //};
+//
   function imagePickerCallback(data){
     if (data.didCancel){
       return;
@@ -27,77 +82,107 @@ const Register = () => {
     if (!data.uri){
       return;
     }
-    setAvatar(data);
+    setAvatar(data.uri);
   }
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <ScrollView>
         <View  style={styles.container}>
         <Image
-          source={ avatar? {uri:avatar.uri} : require('../../assets/avatardefault.png')}
+          source={ avatar ? {uri:avatar} : require('../../assets/avatardefault.png')}
          style={styles.avatar}
          />
          <TouchableOpacity style={styles.button} onPress={() => ImagePicker.showImagePicker({}, imagePickerCallback )}>
            <Text style={styles.buttonText}>Escolha a foto</Text>
          </TouchableOpacity>
          <View style={styles.container}>
-           <Text style={styles.title}>Nome do seu Pokémon:</Text>
-           <TextInput style={styles.input} />
-           <Text style={styles.title}>Altura:</Text>
-           <TextInput style={styles.input} />
-           <Text style={styles.title}>Peso:</Text>
-           <TextInput style={styles.input} />
-           <Text style={styles.title}>Tipo 1:</Text>
-           <TextInput style={styles.input} />
-           <Text style={styles.title}>Tipo 2:</Text>
-           <TextInput style={styles.input} />
-           <Text style={styles.title}>Evolução de:</Text>
-           <TextInput style={styles.input} />
-           <RectButton style={styles.button2}>
-             <Text style={styles.buttonText}>Criar Pokémon!</Text>
+           <Text style={styles.title}>Quem é esse Pokémon??</Text>
+       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal:20}}>    
+        {pokemons
+          .map((pokemon, index) => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.5}
+                key={index}
+                style={[styles.card, selectedPokemon.includes(pokemon.name) ? styles.selectedPoke : {}]}
+                onPress={()=> handleselectedPokemon(pokemon.name,String(index + 1))}>
+                <Text style={styles.buttonText}>{pokemon.name.toUpperCase()}</Text>
+              </TouchableOpacity>
+            );
+          })}
+      </ScrollView>
+      
+           <Text style={styles.title}>Evoluirá para:</Text>
+           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal:20}}>    
+        {pokemons
+          .map((pokemon, index) => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.5}
+                key={index*1000}
+                style={[styles.card, selectedEvolution.includes(pokemon.name) ? styles.selectedPoke : {}]}
+                onPress={()=> handleselectedEvolution(pokemon.name,String(index + 1))}>
+                <Text style={styles.buttonText}>{pokemon.name.toUpperCase()}</Text>
+              </TouchableOpacity>
+            );
+          })}
+      </ScrollView>
+           
+           <RectButton style={styles.button2} onPress={() => handleSubmit()}>
+             <Icon name="check" size={20} />
            </RectButton>
          </View>
          </View>
-      </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({  
   container: {    
-   display: 'flex',    
-   justifyContent: 'center',
-   alignItems: 'center'  
-  },
+   display: 'flex',
+   backgroundColor:'#C42A2A',    
+  },  
   avatar: {
     marginTop:100,
     height: 200,
-    width:200,    
-    justifyContent: 'center'
+    width:200,
+    marginLeft:88,    
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:'#C2D9AD',
+    borderRadius: 100,
+    marginBottom: 16,  
       
    },
   button: {
-    backgroundColor: 'white',
+    backgroundColor: 'red',
     height: 60,
     width: 120,
     flexDirection: 'row',
     borderRadius: 15,
+    borderWidth:2,
+    borderTopColor: '#ffdbdb',
+    borderLeftColor: '#ffdbdb',
+    borderBottomColor: 'gray',
+    borderRightColor: 'gray',
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
+    marginLeft:124,
+    marginBottom:16,
   },
   button2: {
     backgroundColor: '#77ffa0',
     height: 60,
-    width: 120,
+    width: 60,
     flexDirection: 'row',
-    borderRadius: 15,
+    borderRadius: 30,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
-    marginBottom:50,
+    marginBottom:70,
+    marginLeft:148,
   },
   input: {
     height: 40,
@@ -107,6 +192,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     fontSize: 16,
     textAlign: 'center',
+  },
+  selectedPoke: {
+    borderColor: 'red',
+    borderWidth: 2,
   },
   containerbg: {    
     display: 'flex',    
@@ -122,14 +211,11 @@ const styles = StyleSheet.create({
     paddingTop:150,
   },
   card: {
-   backgroundColor: '#ededed',    
    display: 'flex',    
    alignItems: 'center',    
-   borderWidth: 2,
-   borderRadius:10,   
-   borderColor: '#322153',       
    marginVertical: 10,
-   marginHorizontal: 4,  
+   marginHorizontal: 4,
+   paddingHorizontal:4,  
   },  
   searchCont: {
    display: 'flex',   
@@ -147,7 +233,7 @@ const styles = StyleSheet.create({
   borderRadius: 50,  
   },
   description: {
-    color: '#6C6C80',
+    color: '#ffd6d6',
     fontSize: 16,
     marginBottom: 16,
     fontFamily: 'Ubuntu Bold',
@@ -155,10 +241,11 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   buttonText: {
-    color: 'black',
-    fontSize: 14,
+    color: 'white',
+    fontSize: 16,
     fontFamily: 'Roboto',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign:'center',
 
   },
   selectedPoke: {
@@ -166,7 +253,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   title: {
-    color: '#322153',
+    color: '#ffd1d1',
     fontSize: 16,
     fontFamily: 'Ubuntu Bold',
     marginTop: 8,
