@@ -10,9 +10,6 @@ Pokémon automatically!
 
 ![PokedexApp](https://i.ibb.co/SxjCc8c/home.jpg) ![MyTeam](https://i.ibb.co/pzmXNxN/myteam.jpg) 
 
-![Register](https://i.ibb.co/Jryy8jk/register.jpg) ![Details](https://i.ibb.co/VMbZbkx/details.jpg)
-
-
 ### Used Technologies:
 
 - React Native;
