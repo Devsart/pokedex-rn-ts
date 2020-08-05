@@ -1,6 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import {
   StatusBar,
@@ -10,13 +7,17 @@ import {
   Image,
   StyleSheet,
   ImageBackground,
+  Alert,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { RectButton } from 'react-native-gesture-handler';
+import localStorage from '../../services/localstorage';
 
 interface Params {
   name: string;
-  id:string;
+  uri:string;
+  evolucao:string;
 }
 interface Details {
   name: string;
@@ -44,7 +45,6 @@ const Details = () => {
   async function fetchPokemonDetails() {
     await fetch(`https://pokeapi.co/api/v2/pokemon-species/${routeParams.name}/`)
       .then((res) => res.json())
-      // eslint-disable-next-line no-shadow
       .then(function(evolution){
         setEvolution(
           evolution.evolves_from_species ? 
@@ -56,7 +56,6 @@ const Details = () => {
  async function fetchPokemonTypes() {
   await fetch(`https://pokeapi.co/api/v2/pokemon/${routeParams.name}/`)
     .then((res) => res.json())
-    // eslint-disable-next-line no-shadow
     .then(function(details){
       setName(details.name.toUpperCase());
       setType1(details.types[0].type.name.toUpperCase());
@@ -69,8 +68,24 @@ const Details = () => {
   function handleNavigateBack() {
     navigation.goBack();
   }
-  //async function tipo1(){ await(details.types[0].type.name)}
-  //const tipo2 = details.types[1].type.name;
+
+  async function handleRemove(){
+    Alert.alert(
+      'Tem certeza que deseja remover este pokémon?',
+      '',
+      [
+        {text: 'Cancelar.', onPress: async () => {
+            console.log('Cancelado.')
+        }},
+        {text: 'De Acordo.', onPress: async () => {
+          localStorage.deleteItem(routeParams.name);
+          navigation.navigate('Home');
+        }},
+      ],
+      { cancelable: true }
+    )
+
+  };
 
   return (
     <>
@@ -86,7 +101,7 @@ const Details = () => {
       <Image
         style={styles.imagecontainer}
         source={{
-          uri: `https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/${name.toLowerCase()}.png`,
+          uri: routeParams.uri,
         }}
       />
       <View style={styles.containercard}>
@@ -96,7 +111,11 @@ const Details = () => {
       <Text style={styles.text}>TIPO 1: {type1} </Text>
       <Text style={styles.text}>TIPO 2: {type2} </Text>
       <Text style={styles.text}>EVOLUÇÃO DE: {evolution}</Text>
+      <Text style={styles.text}>EVOLUIRÁ PARA: {routeParams.evolucao.toUpperCase()}</Text>
       </View>
+      <RectButton style={styles.button} onPress={handleRemove}>
+        <Text style={styles.text}>Remover do meu time</Text>
+      </RectButton>
     </View>
     </ImageBackground>
     </>
@@ -171,6 +190,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     paddingTop: 10,
   },
+  button: {
+    backgroundColor: '#ededed',    
+    display: 'flex',    
+    alignItems: 'center',    
+    borderWidth: 2,
+    borderRadius:10,   
+    borderTopColor: 'gray',
+    borderLeftColor: 'gray',
+    borderBottomColor: 'white',
+    borderRightColor: 'white',       
+    marginVertical: 10,
+    marginHorizontal: 4,
+    marginBottom:30,
+    paddingTop:10,
+   },
 });
 
 export default Details;

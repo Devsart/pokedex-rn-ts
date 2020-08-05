@@ -2,8 +2,6 @@
 import React, {useState, useEffect} from 'react';
 import { ImageBackground ,StatusBar ,SafeAreaView, ActivityIndicator ,View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import Details from '../Details';
-import api from '../../services/api';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RectButton } from 'react-native-gesture-handler';
 import localStorage from '../../services/localstorage';
@@ -14,7 +12,8 @@ interface Params {
 }
 interface Pokemon {
   name: string;
-  id: number;
+  evolucao: string;
+  uri: string;
 }
 
 const Pokedex = (props: Pokemon) => {
@@ -23,27 +22,20 @@ const Pokedex = (props: Pokemon) => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [searchfeild, setSearchfeild] = useState('');
   const navigation = useNavigation();
-  const [pokeid,setPokeid] = useState('0');
-  const [details, setDetails] = useState([]); 
 
 useEffect(() => {
- fetchPokemons('https://pokeapi.co/api/v2/pokemon?limit=20');
+ fetchPokemons();
 },[]);
-const fetchPokemons = (url:string) => {
-fetch(url)
-.then(response => response.json())
-.then(pokemons => setPokemons(pokemons.results));
+const fetchPokemons = () => {
+  localStorage.getAllItems()
+  .then((poke) => setPokemons(poke))
 };
 
-//async function AllPoke(){
-//  await localStorage.getItem("ivysaur");
-//}
-//console.log(AsyncStorage.getItem(`@myPokemons:ivysaur`))
-
-function handleselectedPokemon(name:string,id:string){
+function handleselectedPokemon(name:string,uri:string,evolucao:string){
   navigation.navigate('Details',{
     name,
-    id,
+    uri,
+    evolucao,
   });
 }
 function handleRegister(){
@@ -73,10 +65,14 @@ return (
         value={searchfeild}
       />
     </View>
-    <ScrollView>
+    <View style={styles.container}>
+      <Text style={styles.title}>Seu time:</Text>
+    </View>
+    {pokemons[0]?
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       
       <View style={styles.container}>
-        {pokemons
+      {pokemons
           .filter(pokemon =>
             pokemon.name.toLowerCase().includes(searchfeild.toLowerCase())
           )
@@ -86,13 +82,11 @@ return (
                 activeOpacity={0.5}
                 key={index}
                 style={styles.card}
-                onPress={()=> handleselectedPokemon(pokemon.name,String(index + 1))}>
+                onPress={()=> handleselectedPokemon(pokemon.name,pokemon.uri,pokemon.evolucao)}>
                 <Image
-                  style={{width: 150, height: 150}}
+                  style={styles.avatar}
                   source={{
-                    uri: `https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/${
-                      pokemon.name
-                    }.png`,
+                    uri: pokemon.uri,
                   }}
                 />
                 <Text style={styles.description}>{pokemon.name.toUpperCase()}</Text>
@@ -101,30 +95,34 @@ return (
           })}
       </View>
     </ScrollView>
-    <View style={styles.indicator}>
-        <ActivityIndicator size="large" color="#E63F34" />
-    </View>
+: <Text style={styles.title2}>{`Você ainda não possui\nnenhum Pokémon.\n\nClique no botão vermelho para capturar!`}</Text>}
     <RectButton style={styles.button} onPress={handleRegister}>
       <Icon name="plus" size={40} color="white" />
     </RectButton>
   </SafeAreaView>
   </ImageBackground>
   </>
-  //:
-  //(
-  //  <View style={styles.indicator}>
-  //    <ActivityIndicator size="large" color="#E63F34" />
-  //  </View>
-  //)
 )
 };
+
 const styles = StyleSheet.create({  
   container: {    
    display: 'flex',    
    flexDirection: 'row',    
    flexWrap: 'wrap',    
-   justifyContent: 'center',  
+   justifyContent: 'center',
   },
+  avatar: {
+    height: 100,
+    width:100,
+    backgroundColor:'#C2D9AD',
+    borderRadius: 50,
+    marginBottom: 16,
+    marginHorizontal:20,
+    marginTop: 20,
+      
+      
+   },
   button: {
     position:'absolute',
     backgroundColor: '#FB4E4E',
@@ -160,6 +158,7 @@ const styles = StyleSheet.create({
    borderColor: '#322153',       
    marginVertical: 10,
    marginHorizontal: 4,  
+   marginTop:40,
   },  
   searchCont: {
    display: 'flex',   
@@ -198,6 +197,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: 'Ubuntu Bold',
     marginTop: 40,
+    textAlign: 'center',
+  },
+  title2: {
+    color: 'gray',
+    fontSize: 24,
+    fontFamily: 'Ubuntu Bold',
+    marginTop: 80,
     textAlign: 'center',
   },
   backButton: {

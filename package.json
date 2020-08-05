@@ -18,6 +18,7 @@
     "@react-navigation/stack": "^5.8.0",
     "@types/pokedex-promise-v2": "github:mudkipme/pokeapi-v2-typescript",
     "@types/react-native-vector-icons": "^6.4.5",
+    "@types/yup": "^0.29.4",
     "@ui-kitten/components": "^5.0.0",
     "formik": "^2.1.5",
     "pokedex-promise-v2": "^3.2.0",

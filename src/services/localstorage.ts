@@ -1,15 +1,16 @@
+/* eslint-disable prettier/prettier */
 import AsyncStorage from '@react-native-community/async-storage';
 
 interface Pokemon {
+    evolucao: string,
     name: string,
     uri: string,
-    evolucao: string,
 }
 
 class LocalStorage {
     
     async getItem(name: string): Promise<Pokemon> {
-        return AsyncStorage.getItem(`@myPokemons:${name}`)
+        return await AsyncStorage.getItem(`@myPokemons:${name}`)
         .then((json) => {
             return JSON.parse(json) as Pokemon;
         });
@@ -27,7 +28,6 @@ class LocalStorage {
         return AsyncStorage.getAllKeys()
         .then((keys: string[]) => {
             const fetchKeys = keys.filter((k) => { return k.startsWith('@myPokemons:'); });
-            console.log(fetchKeys);
             return AsyncStorage.multiGet(fetchKeys);
         })
         .then((result) => {

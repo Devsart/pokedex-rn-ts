@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable prettier/prettier */
+import React, { useRef } from 'react';
 import {
   Platform,
   KeyboardAvoidingView,
@@ -6,56 +7,78 @@ import {
   ImageBackground,
   View,
   Text,
-  StatusBar,
   Image,
 } from 'react-native';
-import { TextInput, RectButton, BaseButton } from 'react-native-gesture-handler';
+import { TextInput, RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
-
+import {Formik, ErrorMessage} from 'formik';
+import * as Yup from 'yup';
+import AsyncStorage  from '@react-native-community/async-storage'
 
 const Home = () => {
 
-const [name, setName] = useState('');
-const [password, setPassword] = useState('');
+const name = useRef(null);
+const password = useRef(null);
 const navigation = useNavigation();
-function handleNatigateToPokedex(){
-  navigation.navigate('Pokedex',{
-    name
-  })
-}
+const FormSchema = Yup.object().shape({
+    name: Yup.string().required('Nome é Obrigatório'),
+    password: Yup.string()
+    .required('Senha é Obrigatório')
+    .min(6, 'Sua senha deve conter pelo menos 6 caracteres')
+})
+
+
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <Formik
+      initialValues={{
+        name: '',
+        password: ''
+      }}
+      onSubmit = {function(values){
+        AsyncStorage.multiSet([['@myUserKey',values.name],['@myUserPass',values.password]]);
+        navigation.navigate('Pokedex',{
+        name: values.name,
+      });
+    }
+  }
+      validationSchema={FormSchema}>
+      {({values,handleChange,handleSubmit,errors, touched, setFieldTouched}) =>
       <KeyboardAvoidingView style={{flex:1}} behavior ={Platform.OS=== 'ios' ? "padding" : undefined}>
             <ImageBackground source={require('../../assets/pokebackground.png')} 
             style={styles.container}
             imageStyle={{height:700,width:375}}>
-            <View style={styles.container}>
+            <View>
               <Text style={styles.title}>{`Bem-vindo,\nMestre Pokémon!`}</Text>
             </View>
-            <View style={styles.container}>
+            <View>
+              {errors.name && touched.name && <Text style={{color:'white'}}>{errors.name}</Text>}
               <TextInput 
               style={styles.input} 
-              returnKeyType='next' 
-              placeholder="Insira seu nome" 
-              value={name} 
+              placeholder="Insira seu nome"
+              ref={name} 
+              value={values.name} 
               autoCorrect={false} 
-              onChangeText={setName} 
-              
+              onChangeText={handleChange('name')} 
+              onBlur={() => setFieldTouched('name',true)}
               />
+              {errors.password && touched.password && <Text style={{color:'white'}}>{errors.password}</Text>}
               <TextInput 
               style={styles.input}
               textContentType="password" 
-              placeholder="Insira sua senha" 
-              value={password} 
+              placeholder="Insira sua senha"
+              ref={password} 
+              value={values.password} 
               autoCorrect={false}
-              keyboardType='numeric' 
-              secureTextEntry 
-              onChangeText={setPassword}  />
+              keyboardType='default' 
+              secureTextEntry
+              onBlur={() => setFieldTouched('password',true)} 
+              onChangeText={handleChange('password')}  />
+              
             </View>
-            <View style={{flex:1, justifyContent:'center', paddingLeft:64, flexDirection:'column'}}>
-            <RectButton style={styles.button} onPress={handleNatigateToPokedex}>
+            <View style={{flex:1, alignItems:'center'}}>
+            <RectButton style={styles.button} onPress={handleSubmit}>
               <View style={styles.buttonIcon}>
                 <Image source={require('../../assets/pokego.png')} 
                 />
@@ -65,6 +88,8 @@ function handleNatigateToPokedex(){
             </View>
           </ImageBackground>
       </KeyboardAvoidingView>
+}
+      </Formik>
     </>
   );
 };
@@ -73,6 +98,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 32,
+       backgroundColor:'#C42A2A', 
+    
   },
 
   main: {
@@ -82,12 +109,14 @@ const styles = StyleSheet.create({
 
   title: {
     paddingTop: 90,
-    color: '#322153',
+    color: 'white',
     fontSize: 24,
     fontFamily: 'Ubuntu Bold',
     maxWidth: 260,
-    marginTop: 64,
+    marginTop: 24,
     textAlign: "center",
+    marginLeft: 20,
+    paddingBottom:40,
   },
 
   description: {
@@ -118,8 +147,8 @@ const styles = StyleSheet.create({
     width: 160,
     flexDirection: 'row',
     borderRadius: 30,
-    overflow: 'hidden',
     alignItems: 'center',
+    justifyContent: 'center'
   },
 
   buttonIcon: {
