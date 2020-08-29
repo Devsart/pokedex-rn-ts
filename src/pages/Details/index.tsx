@@ -36,7 +36,6 @@ const Details = () => {
   const [weight, setWeight] = useState(0);
   const [evolution, setEvolution] = useState('');
   const routeParams = route.params as Params;
-  console.log(routeParams.id)
   useEffect(() => {
     fetchPokemonTypes();
     fetchPokemonDetails();
